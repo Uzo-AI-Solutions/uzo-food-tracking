@@ -3,25 +3,25 @@
 A mobile-first PWA for tracking food inventory, recipes, and daily meal logging. Data is stored in Supabase, with optional AI-assisted recipe generation via OpenRouter.
 
 ## Features
-- Manage pantry inventory with nutrition facts, prices, stock, and ratings
-- Full-text search, rich filters, and tag management
-- Create recipes with automatic cost and macro calculations
-- Log meals by items (with costs and macros)
-- Review nutrition insights and trends through analytics dashboard
-- Configure personal goals and preferences in settings
-- AI-assisted recipe ideas via OpenRouter
-- Installable PWA with offline caching for assets
-- Mobile-first responsive design optimized for touch interfaces
+- **Food Inventory Management:** Track pantry items with nutrition facts, stock status, and personal ratings
+- **Advanced Search:** Full-text search across items with rich filtering and tag-based organization
+- **Recipe Management:** Create and organize recipes with automatic nutrition calculations
+- **Meal Logging:** Track daily meals with automatic nutrition aggregation
+- **Analytics Dashboard:** Visualize nutrition trends and consumption statistics over time
+- **AI Recipe Generation:** Get recipe suggestions based on available ingredients via OpenRouter integration
+- **Settings & Preferences:** Configure personal nutrition goals and app preferences
+- **PWA Support:** Installable progressive web app with offline asset caching
+- **Mobile-First Design:** Responsive touch-optimized interface designed for mobile devices
 
 ## Tech Stack
 - **Frontend:** React 18, TypeScript, Vite
-- **UI:** shadcn/ui (Radix UI) + Tailwind CSS + Mobile-first responsive design
-- **Data/State:** TanStack Query (React Query v5)
-- **Backend:** Supabase (PostgreSQL, SQL migrations, RPC, RLS policies)
-- **AI:** OpenRouter with Hugging Face models
-- **PWA:** vite-plugin-pwa with offline caching
-- **Testing:** Vitest + Testing Library; Playwright for E2E
-- **Documentation:** OpenAPI 3.1 specification
+- **UI Framework:** shadcn/ui (Radix UI primitives) + Tailwind CSS with mobile-first responsive design
+- **State Management:** TanStack Query (React Query v5) for server state
+- **Backend:** Supabase (PostgreSQL with migrations, RPC functions, RLS policies)
+- **AI Integration:** OpenRouter API for recipe generation
+- **PWA:** vite-plugin-pwa with offline asset caching and service worker
+- **Testing:** Vitest + Testing Library for unit tests; Playwright for E2E testing
+- **Documentation:** OpenAPI 3.1 specification with validation tools
 
 ## Getting Started
 1. Create a `.env` file in the project root from the `.env.example` file:
@@ -44,8 +44,17 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
    The application runs at `http://localhost:8080`.
 
 ## Database Setup (Supabase)
-- Run SQL files in `supabase/migrations/*.sql` using the Supabase SQL editor.
-- Optionally seed data via `supabase/seed.sql`.
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run migration files in chronological order from `supabase/migrations/*.sql` using the Supabase SQL editor
+3. The migrations will create tables, RPC functions, RLS policies, and analytics cache system
+4. Optionally seed sample data using `supabase/seed.sql`
+
+**Key Database Features:**
+- Row Level Security (RLS) policies for multi-user support
+- Full-text search vectors for item search
+- Automated cost calculation triggers
+- Analytics caching for performance
+- Bulk insert RPC functions for efficiency
 
 ## Testing
 - **Unit/Component (Vitest):**
@@ -66,23 +75,52 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
 ## Project Structure
 ```
 ├─ src/
-│  ├─ pages/         # App pages (Index/Inventory, Recipes, Meals, Analytics, Settings, Tags, RecipeViewer)
-│  ├─ components/    # UI and domain components (dialogs, cards, forms)
-│  │  └─ ui/         # shadcn/ui component library
-│  ├─ hooks/         # Data hooks (inventory, recipes, meal logs, tags, analytics)
-│  ├─ lib/           # Supabase client, utils, constants, type mappers, calculations
-│  └─ types/         # TypeScript type definitions (DB and app types)
-├─ tests/            # E2E tests (Playwright)
-├─ src/tests/        # Unit/component tests (Vitest)
-├─ supabase/         # SQL migrations and seed data
-│  └─ migrations/    # Database schema migrations (chronological)
-├─ docs/             # API documentation (OpenAPI 3.1 spec)
-├─ product-requirements/  # Design and architecture docs
-└─ public/           # Static assets (PWA icons, screenshots)
+│  ├─ pages/         # Main application pages
+│  │  ├─ Index.tsx           # Food inventory management (home page)
+│  │  ├─ Recipes.tsx         # Recipe library
+│  │  ├─ RecipeViewer.tsx    # Individual recipe view
+│  │  ├─ Meals.tsx           # Meal logging interface
+│  │  ├─ Analytics.tsx       # Analytics dashboard
+│  │  ├─ Tags.tsx            # Tag management
+│  │  ├─ Settings.tsx        # User preferences
+│  │  └─ AuthCallback.tsx    # Supabase auth callback
+│  ├─ components/    # UI components
+│  │  ├─ ui/         # shadcn/ui component library
+│  │  └─ [various]   # Domain-specific dialogs, cards, forms
+│  ├─ hooks/         # Custom React hooks
+│  │  ├─ useMealLogs.ts      # Meal logging operations
+│  │  ├─ useRecipes.ts       # Recipe CRUD operations
+│  │  ├─ useTags.ts          # Tag management
+│  │  ├─ useInventorySearch.ts # Inventory search & filters
+│  │  └─ [others]            # Various utility hooks
+│  ├─ lib/           # Core utilities
+│  │  ├─ supabase.ts         # Supabase client configuration
+│  │  ├─ openrouter.ts       # OpenRouter AI client
+│  │  ├─ calculations.ts     # Recipe cost & nutrition calculations
+│  │  ├─ typeMappers.ts      # DB to app type conversions
+│  │  ├─ logger.ts           # Centralized logging
+│  │  └─ [others]            # Constants, validators, utilities
+│  └─ types/         # TypeScript definitions
+├─ tests/            # Playwright E2E tests
+├─ src/tests/        # Vitest unit tests
+├─ supabase/         # Database files
+│  ├─ migrations/    # SQL migrations (chronological order)
+│  └─ seed.sql       # Sample data for testing
+├─ docs/             # Documentation
+│  ├─ openapi-3.1.yaml       # API specification
+│  └─ [guides]               # Technical guides
+├─ product-requirements/      # Design documents
+├─ claudedocs/       # Claude Code analysis reports
+└─ public/           # Static assets
+   ├─ pwa-*.png      # PWA icons
+   └─ screenshots/   # App screenshots for README
 ```
 
-- Path alias: use `@` for `./src` (see `tsconfig.json`)
-- Mobile utilities: `use-mobile.tsx` hook for responsive logic
+**Development Notes:**
+- Path alias: `@` maps to `./src` (configured in `tsconfig.json`)
+- Mobile utilities: `use-mobile.tsx` hook for responsive breakpoint logic
+- Type safety: Separate DB types from app types for clean abstractions
+- Testing: Unit tests colocated in `src/tests/`, E2E tests in `tests/`
 
 ## Deployment
 Build a production bundle:
@@ -99,31 +137,47 @@ npm run preview:prod  # Production mode
 
 The PWA service worker automatically registers in production builds (via `vite-plugin-pwa`).
 
-## AI Setup
-- Enable AI features by setting `VITE_OPEN_ROUTER_API_KEY` in `.env`
-- The app uses OpenRouter to access Hugging Face models for recipe generation
-- Relevant entry points:
-  - `src/components/RecipeGeneratorDialog.tsx` - Main AI recipe generation interface
-  - `src/lib/aiJson.ts` - AI response parsing and validation
+## AI Recipe Generation
 
-If you don't set the API key, AI actions will show a friendly error and no requests are made.
+The app includes AI-powered recipe generation using OpenRouter's API:
+
+**Setup:**
+1. Get an API key from [OpenRouter](https://openrouter.ai/)
+2. Add `VITE_OPEN_ROUTER_API_KEY` to your `.env` file
+3. The AI recipe generator will appear in the Recipes page
+
+**Features:**
+- Generate recipes from available inventory items
+- Specify servings, cuisine style, and dietary restrictions
+- Preview generated recipes before saving
+- Automatic ingredient mapping to inventory items
+- Graceful fallback if API key is not configured
+
+**Implementation:**
+- `src/components/RecipeGeneratorDialog.tsx` - Main UI interface
+- `src/lib/openrouter.ts` - API client with error handling
+- `src/lib/aiJson.ts` - Response parsing and validation
+
+The app works fully without an API key; AI features simply won't be available.
 
 ## Screenshots
 
 ### Inventory Management
-<img src="public/screenshots/IMG_1839.PNG" width="250" alt="Inventory List" /> <img src="public/screenshots/IMG_1840.PNG" width="250" alt="Add/Edit Item" /> <img src="public/screenshots/IMG_1841.PNG" width="250" alt="Item Details" />
+<img src="public/screenshots/inventory-management-1.png" width="250" alt="Inventory List" /> <img src="public/screenshots/inventory-management-2.png" width="250" alt="Add/Edit Item" /> <img src="public/screenshots/inventory-management-3.png" width="250" alt="Item Details" />
 
 ### Recipe Management
-<img src="public/screenshots/IMG_1842.PNG" width="250" alt="Recipe List" /> <img src="public/screenshots/IMG_1843.PNG" width="250" alt="Recipe Details" /> <img src="public/screenshots/IMG_1844.PNG" width="250" alt="Add/Edit Recipe" />
+<img src="public/screenshots/recipe-page-0.png" width="250" alt="Recipe List" /> <img src="public/screenshots/recipe-page-0.1.png" width="250" alt="Recipe Details" /> <img src="public/screenshots/recipe-page-1.png" width="250" alt="Add/Edit Recipe" />
 
-### Meal Logging & Analytics
-<img src="public/screenshots/IMG_1845.PNG" width="250" alt="Meal Log List" /> <img src="public/screenshots/IMG_1846.PNG" width="250" alt="Add Meal Log" /> <img src="public/screenshots/IMG_1847.PNG" width="250" alt="Analytics Dashboard" />
+### Meal Logging
+<img src="public/screenshots/log-page-1.png" width="250" alt="Meal Log List" /> <img src="public/screenshots/log-page-2.png" width="250" alt="Add Meal Dialog" /> <img src="public/screenshots/log-page-3.png" width="250" alt="Meal Details" />
 
-### Settings & Tags
-<img src="public/screenshots/IMG_1848.PNG" width="250" alt="Settings" /> <img src="public/screenshots/IMG_1849.PNG" width="250" alt="Tag Management" />
+<img src="public/screenshots/log-page-4.png" width="250" alt="Edit Meal" /> <img src="public/screenshots/log-page-5.png" width="250" alt="Meal Log Filters" /> <img src="public/screenshots/log-page-6.png" width="250" alt="Meal History" />
 
-### AI Features
-<img src="public/screenshots/IMG_1850.PNG" width="250" alt="AI Recipe Generator" /> <img src="public/screenshots/IMG_1851.PNG" width="250" alt="AI Recipe Results" />
+### Analytics Dashboard
+<img src="public/screenshots/analytics-page-0.png" width="250" alt="Analytics Overview" /> <img src="public/screenshots/analytics-page-1.png" width="250" alt="Nutrition Trends" /> <img src="public/screenshots/analytics-page-2.png" width="250" alt="Consumption Statistics" />
+
+### Settings
+<img src="public/screenshots/settings-page.png" width="250" alt="Settings & Configuration" />
 
 ---
 
