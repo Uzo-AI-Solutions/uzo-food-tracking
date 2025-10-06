@@ -117,17 +117,17 @@ export interface RecipeIngredient {
 
 export interface MealLog {
   id: number;
-  items: string[]; // Array of food items as strings
+  recipe_ids: number[]; // Array of recipe IDs
   meal_name: string;
   notes?: string;
   rating?: number;
-  macros: {
+  nutrition: {
     calories: number;
     protein: number;
     carbs: number;
     fat: number;
   };
-  eaten_on: string; // Date when the meal was actually consumed (YYYY-MM-DD)
+  date: string; // Date when the meal was consumed (YYYY-MM-DD)
   created_at: string; // Timestamp when the log entry was created
 }
 
@@ -163,12 +163,12 @@ export interface WeeklyMealPlan {
 // Database row type for meal_logs table
 export interface DbMealLog {
   id: number;
-  items: string[];
-  meal_name: string;
+  recipe_ids: number[];
+  meal_name?: string | null;
+  cooked_at?: string | null; // Date when the meal was consumed (YYYY-MM-DD)
   notes?: string | null;
   rating?: number | null;
   macros?: Record<string, unknown> | null;
-  eaten_on?: string | null; // Date when the meal was consumed (YYYY-MM-DD)
   created_at?: string | null; // Timestamp when the log entry was created
 }
 

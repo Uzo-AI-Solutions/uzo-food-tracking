@@ -357,7 +357,6 @@ describe('typeMappers', () => {
           carbs: 60,
           fat: 20,
         },
-        cost: null,
       });
     });
   });
