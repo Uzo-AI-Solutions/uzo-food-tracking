@@ -51,8 +51,9 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
 
 **Key Database Features:**
 - Row Level Security (RLS) policies for multi-user support
-- Full-text search vectors for item search
-- Automated cost calculation triggers
+- Full-text search vectors (tsvector) for items, recipes, and meal logs
+- Automated search vector maintenance via triggers
+- GIN indexes for fast full-text search performance
 - Analytics caching for performance
 - Bulk insert RPC functions for efficiency
 
@@ -81,7 +82,6 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
 │  │  ├─ RecipeViewer.tsx    # Individual recipe view
 │  │  ├─ Meals.tsx           # Meal logging interface
 │  │  ├─ Analytics.tsx       # Analytics dashboard
-│  │  ├─ Tags.tsx            # Tag management
 │  │  ├─ Settings.tsx        # User preferences
 │  │  └─ AuthCallback.tsx    # Supabase auth callback
 │  ├─ components/    # UI components
@@ -96,7 +96,7 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
 │  ├─ lib/           # Core utilities
 │  │  ├─ supabase.ts         # Supabase client configuration
 │  │  ├─ openrouter.ts       # OpenRouter AI client
-│  │  ├─ calculations.ts     # Recipe cost & nutrition calculations
+│  │  ├─ calculations.ts     # Recipe nutrition calculations
 │  │  ├─ typeMappers.ts      # DB to app type conversions
 │  │  ├─ logger.ts           # Centralized logging
 │  │  └─ [others]            # Constants, validators, utilities

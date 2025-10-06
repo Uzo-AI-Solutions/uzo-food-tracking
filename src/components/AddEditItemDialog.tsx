@@ -92,7 +92,6 @@ export function AddEditItemDialog({ open, onOpenChange, item, onSave }: AddEditI
         ingredients: formData.ingredients.trim() || undefined,
         // Default values for removed fields
         in_stock: true,
-        price: undefined,
         serving_size: 100,
         serving_quantity: undefined,
         serving_unit: undefined,

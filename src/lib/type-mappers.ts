@@ -20,7 +20,6 @@ export function dbItemToFoodItem(dbItem: DbItemRow): FoodItem {
     brand: dbItem.brand || undefined,
     category: dbItem.category || 'Uncategorized',
     in_stock: true, // Default to in stock since in_stock field was removed from schema
-    price: undefined, // Price fields were removed from schema
     serving_size: undefined, // Serving fields were removed from schema
     serving_quantity: undefined,
     serving_unit: undefined,

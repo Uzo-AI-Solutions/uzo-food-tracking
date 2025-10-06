@@ -67,7 +67,7 @@ export interface Recipe {
   instructions: string;
   servings: number;
   total_time_minutes?: number;
-  ingredients: RecipeIngredient[]; // Linked ingredients (for cost calculation)
+  ingredients: RecipeIngredient[]; // Linked ingredients
   ingredient_list?: string[]; // AI-generated ingredient strings
   nutrition_source?: NutritionSource; // How nutrition was determined
   nutrition: {

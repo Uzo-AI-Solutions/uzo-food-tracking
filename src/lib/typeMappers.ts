@@ -140,7 +140,6 @@ export function mealLogToDbInsert(mealLog: Omit<MealLog, 'id'>): Omit<DbMealLog,
     notes: mealLog.notes || null,
     rating: null,
     macros: mealLog.nutrition,
-    cost: null,
   };
 }
 

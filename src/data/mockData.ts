@@ -7,7 +7,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Whole Foods',
     category: 'Fruits',
     in_stock: true,
-    price: 2.99,
     image_url: 'https://images.unsplash.com/photo-1501286353178-1ec881214838?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 89,
@@ -25,7 +24,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Perdue',
     category: 'Meat',
     in_stock: false,
-    price: 8.99,
     image_url: 'https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 165,
@@ -43,7 +41,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Uncle Ben\'s',
     category: 'Grains',
     in_stock: true,
-    price: 3.49,
     image_url: 'https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 112,
@@ -61,7 +58,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Fage',
     category: 'Dairy',
     in_stock: true,
-    price: 5.99,
     image_url: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 59,
@@ -79,7 +75,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Bertolli',
     category: 'Oils',
     in_stock: false,
-    price: 7.99,
     image_url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 884,
@@ -97,7 +92,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Fresh Market',
     category: 'Vegetables',
     in_stock: true,
-    price: 3.49,
     image_url: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 34,
@@ -115,7 +109,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Wild Alaskan',
     category: 'Meat',
     in_stock: true,
-    price: 18.99,
     image_url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 208,
@@ -133,7 +126,6 @@ export const mockFoodItems: FoodItem[] = [
     brand: 'Organic',
     category: 'Fruits',
     in_stock: false,
-    price: 1.99,
     image_url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=400&fit=crop&crop=center',
     nutrition: {
       calories_per_100g: 160,
@@ -165,7 +157,6 @@ export const mockRecipes: Recipe[] = [
       carbs_per_serving: 30,
       fat_per_serving: 2,
     },
-    cost_per_serving: 2.50,
   },
   {
     id: '2',
@@ -184,7 +175,6 @@ export const mockRecipes: Recipe[] = [
       carbs_per_serving: 8,
       fat_per_serving: 18,
     },
-    cost_per_serving: 12.50,
   },
   {
     id: '3',
@@ -203,7 +193,6 @@ export const mockRecipes: Recipe[] = [
       carbs_per_serving: 22,
       fat_per_serving: 16,
     },
-    cost_per_serving: 3.75,
   },
   {
     id: '4',
@@ -222,7 +211,6 @@ export const mockRecipes: Recipe[] = [
       carbs_per_serving: 45,
       fat_per_serving: 8,
     },
-    cost_per_serving: 4.20,
   },
   {
     id: '5',
@@ -242,7 +230,6 @@ export const mockRecipes: Recipe[] = [
       carbs_per_serving: 55,
       fat_per_serving: 12,
     },
-    cost_per_serving: 6.80,
   },
 ];
 
@@ -266,7 +253,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 30,
       fat: 2,
     },
-    estimated_cost: 2.50,
   },
   {
     id: '2',
@@ -280,7 +266,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 8,
       fat: 18,
     },
-    estimated_cost: 12.50,
   },
   {
     id: '3',
@@ -294,7 +279,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 22,
       fat: 16,
     },
-    estimated_cost: 3.75,
   },
   {
     id: '4',
@@ -308,7 +292,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 45,
       fat: 8,
     },
-    estimated_cost: 4.20,
   },
   {
     id: '5',
@@ -322,7 +305,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 55,
       fat: 12,
     },
-    estimated_cost: 6.80,
   },
   {
     id: '6',
@@ -336,7 +318,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 30,
       fat: 2,
     },
-    estimated_cost: 3.00,
   },
   {
     id: '7',
@@ -350,7 +331,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 12,
       fat: 18,
     },
-    estimated_cost: 13.50,
   },
   {
     id: '8',
@@ -364,7 +344,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 25,
       fat: 18,
     },
-    estimated_cost: 4.25,
   },
   {
     id: '9',
@@ -378,7 +357,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 50,
       fat: 8,
     },
-    estimated_cost: 4.50,
   },
   {
     id: '10',
@@ -392,7 +370,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 58,
       fat: 14,
     },
-    estimated_cost: 7.20,
   },
   // Add some multi-recipe meal examples
   {
@@ -407,7 +384,6 @@ export const mockMealLogs: MealLog[] = [
       carbs: 75,
       fat: 10,
     },
-    estimated_cost: 6.70,
   },
   {
     id: '12',
@@ -421,6 +397,5 @@ export const mockMealLogs: MealLog[] = [
       carbs: 30,
       fat: 34,
     },
-    estimated_cost: 16.25,
   },
 ];
