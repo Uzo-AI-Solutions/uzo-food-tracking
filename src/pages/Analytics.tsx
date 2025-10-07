@@ -78,12 +78,8 @@ export default function Analytics() {
 
   // Helper function to build cache queries with optional date filtering
   const buildCacheQuery = useCallback((tableName: string, orderField: string) => {
-    const bypassAuth = import.meta.env.VITE_BYPASS_AUTH === 'true';
+    // No user_id filtering needed - all data is shared across users
     let query = supabase.from(tableName).select('*');
-
-    if (bypassAuth) {
-      query = query.eq('user_id', 'e57888be-f990-4cd4-85ad-a519be335938');
-    }
 
     if (selectedPeriod !== 'all') {
       const cutoffDate = new Date();
@@ -112,16 +108,10 @@ export default function Analytics() {
 
       logger.info('🔄 Loading analytics data from cache system...');
 
-      // Check if we're in bypass mode and need to pass user_id
-      const bypassAuth = import.meta.env.VITE_BYPASS_AUTH === 'true';
-      const rpcParams = bypassAuth
-        ? {
-            p_user_id: 'e57888be-f990-4cd4-85ad-a519be335938',
-            ...(selectedPeriod !== 'all' && { p_days_back: selectedPeriod })
-          }
-        : {
-            ...(selectedPeriod !== 'all' && { p_days_back: selectedPeriod })
-          };
+      // RPC function now aggregates all data, no user_id filtering needed
+      const rpcParams = selectedPeriod !== 'all'
+        ? { p_days_back: selectedPeriod }
+        : {};
 
       // Load all data in parallel
       const [

@@ -1,6 +1,5 @@
 import React from 'react';
 import { supabase } from './supabase';
-import { getCurrentUserId } from './auth-helpers';
 import { FoodItem, Recipe, Tag, MealLog } from '../types';
 import type { Database } from '../types/database';
 import { dbItemToFoodItem, dbRecipeToRecipe, dbTagToTag, dbMealLogToMealLog } from './type-mappers';
@@ -286,10 +285,9 @@ export async function searchMealLogs(
   } = options;
 
   try {
-    const userId = await getCurrentUserId();
     const trimmed = query.trim();
 
-    // Base query builder
+    // Base query builder - no user_id filtering, RLS handles authentication
     const base = supabase
       .from('meal_logs')
       .select('*', { count: 'exact' })
@@ -302,16 +300,13 @@ export async function searchMealLogs(
 
     if (!trimmed) {
       // No query: just return latest
-      const q = userId ? base.eq('user_id', userId) : base;
-      const { data, error, count } = await q;
+      const { data, error, count } = await base;
       if (error) throw error;
       items = (data || []).map(dbMealLogToMealLog);
       total = count || items.length;
     } else {
       // 1) Try Full-Text Search (FTS) via search_vector
-      const ftsQuery = userId
-        ? base.textSearch('search_vector', trimmed, { type: 'websearch', config: 'english' }).eq('user_id', userId)
-        : base.textSearch('search_vector', trimmed, { type: 'websearch', config: 'english' });
+      const ftsQuery = base.textSearch('search_vector', trimmed, { type: 'websearch', config: 'english' });
 
       const { data: ftsDataRaw, error: ftsError, count: ftsCount } = await ftsQuery;
       let ftsData = ftsDataRaw;
@@ -327,9 +322,7 @@ export async function searchMealLogs(
       } else {
         // 2) Fallback: substring match (trigram-backed) on meal_name and notes
         const like = `%${trimmed}%`;
-        const likeQuery = userId
-          ? base.or(`meal_name.ilike.${like},notes.ilike.${like}`).eq('user_id', userId)
-          : base.or(`meal_name.ilike.${like},notes.ilike.${like}`);
+        const likeQuery = base.or(`meal_name.ilike.${like},notes.ilike.${like}`);
 
         const { data: likeData, error: likeError, count: likeCount } = await likeQuery;
         if (likeError) throw likeError;

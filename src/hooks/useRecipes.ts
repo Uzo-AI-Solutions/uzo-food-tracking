@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
-import { requireCurrentUserId } from '../lib/auth-helpers';
+import { addUserIdToInsert } from '../lib/auth-helpers';
 import { Recipe, RecipeIngredient } from '../types';
 import type { Database } from '../types/database';
 
@@ -130,7 +130,6 @@ export function useRecipes() {
 
 const addRecipe = async (recipe: Omit<Recipe, 'id' | 'is_favorite'> & { selectedTagIds?: string[] }) => {
     try {
-      const userId = await requireCurrentUserId();
       const { selectedTagIds, ...recipeWithoutTags } = recipe;
 
       // Convert selectedTagIds to tag names if provided, otherwise use existing tags
@@ -142,11 +141,11 @@ const addRecipe = async (recipe: Omit<Recipe, 'id' | 'is_favorite'> & { selected
         tagsToStore = recipeWithoutTags.tags.map(tag => tag.name);
       }
 
-      const dbRecipe = recipeToDbInsert({ ...recipeWithoutTags, tags: tagsToStore.map(name => ({ name, id: 0, color: '#3b82f6', created_at: '', updated_at: '' })) });
+      const dbRecipe = await addUserIdToInsert(recipeToDbInsert({ ...recipeWithoutTags, tags: tagsToStore.map(name => ({ name, id: 0, color: '#3b82f6', created_at: '', updated_at: '' })) }));
 
       const { data: recipeData, error: recipeError } = await supabase
         .from('recipes')
-        .insert([{ ...dbRecipe, user_id: userId }])
+        .insert([dbRecipe])
         .select()
         .single();
 

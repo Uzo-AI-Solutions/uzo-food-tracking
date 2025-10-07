@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
-import { requireCurrentUserId } from '../lib/auth-helpers';
+import { addUserIdToInsert } from '../lib/auth-helpers';
 import { FoodItem, DbItem } from '../types';
 import { dbItemToFoodItem, foodItemToDbInsert } from '../lib/type-mappers';
 import { mockFoodItems } from '../data/mockData';
@@ -159,18 +159,17 @@ export function useInventorySearch(): UseInventorySearchResult {
       }
 
       // Otherwise, add to Supabase
-      const userId = await requireCurrentUserId()
       const now = new Date().toISOString();
-      const dbItem = foodItemToDbInsert({
+      const dbItem = await addUserIdToInsert(foodItemToDbInsert({
         ...itemData,
         last_edited: now,
         created_at: now,
         updated_at: now,
-      });
+      }));
 
       const { data, error } = await supabase
         .from('items')
-        .insert([{ ...dbItem, user_id: userId }])
+        .insert([dbItem])
         .select()
         .single();
 
