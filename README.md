@@ -57,6 +57,20 @@ A mobile-first PWA for tracking food inventory, recipes, and daily meal logging.
 - Analytics caching for performance
 - Bulk insert RPC functions for efficiency
 
+## Data Access & RLS (Current)
+- Authenticated-only access: RLS policies allow access to app tables for any authenticated user; unauthenticated requests are denied.
+- Affected tables: `items`, `recipes`, `meal_logs`, `daily_analytics_cache`, `weekly_analytics_cache`, `monthly_analytics_cache`.
+- Policy shape: `FOR ALL USING (auth.uid() IS NOT NULL)`; the Service Role key (server side) bypasses RLS as usual.
+- Practical impact: once signed in, users see all data in the system. This simplifies collaboration and admin workflows.
+
+## Analytics Architecture (System-Wide Aggregation)
+- System-wide caches: Analytics caches aggregate across all users; `user_id` is nullable and `NULL` represents the “all users” aggregate.
+- Uniqueness: Unique constraints use `NULLS NOT DISTINCT` on `(user_id, date|week_start|month_start)` to support a single system-wide row and upserts via `ON CONFLICT (user_id, ...)`.
+- Trigger updates: `update_analytics_cache()` recomputes daily/weekly/monthly caches after changes to `meal_logs`.
+- RPC behavior: `get_analytics_data(p_days_back, p_user_id)` aggregates across all data and ignores `p_user_id` (kept for compatibility).
+
+
+
 ## Testing
 - **Unit/Component (Vitest):**
   - `npm test`: Run tests in watch mode

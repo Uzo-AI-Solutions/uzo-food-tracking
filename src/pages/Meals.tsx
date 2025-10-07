@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Calendar, Utensils, Edit, Trash2, Clock, Search, ChevronDown, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -74,9 +74,23 @@ export default function Meals() {
   // Ensure mealLogs is always an array
   const safeMealLogs = Array.isArray(mealLogs) ? mealLogs : [];
 
-  // Meals are already filtered by date range from the hook
-  const filteredMeals = safeMealLogs;
+  // Filter meals by current date range from navigation hook
+  const filteredMeals = safeMealLogs.filter(log =>
+    (!dateRange.startDate || log.eaten_on >= dateRange.startDate) &&
+    (!dateRange.endDate || log.eaten_on <= dateRange.endDate)
+  );
   const recentLogs = filteredMeals.slice(0, 50); // Show more since we're loading efficiently
+
+  // If current date range has no results but we have logs, jump to most recent log's month
+  useEffect(() => {
+    if (!loading && safeMealLogs.length > 0 && filteredMeals.length === 0) {
+      const mostRecent = safeMealLogs[0]; // loaded in desc order
+      if (mostRecent?.eaten_on) {
+        goToDate(mostRecent.eaten_on);
+        setViewMode('month');
+      }
+    }
+  }, [loading, safeMealLogs, filteredMeals.length, goToDate, setViewMode]);
 
   const formatDate = (eatenOn: string) => {
     if (!eatenOn) return 'Unknown Date';

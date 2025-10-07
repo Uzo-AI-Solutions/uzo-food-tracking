@@ -11,9 +11,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, loading } = useAuth()
   const [showAuthDialog, setShowAuthDialog] = useState(false)
 
-  // Bypass authentication in development mode
-  const bypassAuth = import.meta.env.VITE_BYPASS_AUTH === 'true'
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -22,7 +19,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     )
   }
 
-  if (!user && !bypassAuth) {
+  if (!user) {
     return (
       <>
         <div className="min-h-screen flex flex-col items-center justify-center p-4">

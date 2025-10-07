@@ -20,34 +20,26 @@ export function useMealLogsByDate({ startDate, endDate, autoLoad = true }: UseMe
   const [error, setError] = useState<string | null>(null);
   const [usingMockData, setUsingMockData] = useState(false);
 
-  const loadMealLogsForDateRange = useCallback(async (customStartDate?: string, customEndDate?: string) => {
+  const loadMealLogsForDateRange = useCallback(async (_customStartDate?: string, _customEndDate?: string) => {
     try {
       setLoading(true);
       setError(null);
+      
+      logger.info('🔄 Loading all meal logs...');
 
-      const queryStartDate = customStartDate || startDate;
-      const queryEndDate = customEndDate || endDate;
-
-      logger.info(`🔄 Loading meal logs from ${queryStartDate} to ${queryEndDate}...`);
-
-      // Query meal logs for the specific date range
+      // Load all meal logs; UI will filter by date range
       const { data, error } = await supabase
         .from('meal_logs')
         .select('*')
-        .gte('eaten_on', queryStartDate)
-        .lte('eaten_on', queryEndDate)
         .order('eaten_on', { ascending: false })
         .order('created_at', { ascending: false }); // Secondary sort by creation time
 
       if (error) {
         logger.warn('⚠️ Supabase connection failed, falling back to mock data:', error.message);
-        // Filter mock data to the date range
-        const filteredMockData = mockMealLogs.filter(log =>
-          log.eaten_on >= queryStartDate && log.eaten_on <= queryEndDate
-        );
-        setMealLogs(filteredMockData);
+        // Use all mock data
+        setMealLogs(mockMealLogs);
         setUsingMockData(true);
-        logger.info('✅ Loaded filtered mock data:', filteredMockData.length, 'meal logs');
+        logger.info('✅ Loaded mock data:', mockMealLogs.length, 'meal logs');
         return;
       }
 
@@ -55,24 +47,20 @@ export function useMealLogsByDate({ startDate, endDate, autoLoad = true }: UseMe
       logger.info('✅ Connected to Supabase successfully');
 
       if (data) {
-        logger.info(`✅ Loaded ${data.length} meal logs for date range ${queryStartDate} to ${queryEndDate}`);
+        logger.info(`✅ Loaded ${data.length} total meal logs`);
         const mappedMealLogs = data.map(dbMealLogToMealLog);
         setMealLogs(mappedMealLogs);
         setUsingMockData(false);
       } else {
-        // Database is connected but no data for this range
-        logger.info(`ℹ️ No meal logs found for date range ${queryStartDate} to ${queryEndDate}`);
+        // Database is connected but empty
+        logger.info('ℹ️ No meal logs found');
         setMealLogs([]);
         setUsingMockData(false);
       }
     } catch (err) {
       logger.warn('⚠️ Error loading meal logs, falling back to mock data:', err);
-      // Filter mock data to the date range on error
-      const filteredMockData = mockMealLogs.filter(log =>
-        log.eaten_on >= (customStartDate || startDate) &&
-        log.eaten_on <= (customEndDate || endDate)
-      );
-      setMealLogs(filteredMockData);
+      // Use all mock data on error
+      setMealLogs(mockMealLogs);
       setUsingMockData(true);
       setError(err instanceof Error ? err.message : 'Failed to load meal logs');
     } finally {
@@ -99,12 +87,7 @@ export function useMealLogsByDate({ startDate, endDate, autoLoad = true }: UseMe
       if (error) throw error;
 
       const newMealLog = dbMealLogToMealLog(data as DbMealLog);
-
-      // Only add to local state if it falls within the current date range
-      if (newMealLog.eaten_on >= startDate && newMealLog.eaten_on <= endDate) {
-        setMealLogs(prev => [newMealLog, ...prev]);
-      }
-
+      setMealLogs(prev => [newMealLog, ...prev]);
       return newMealLog;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to add meal log');
@@ -124,17 +107,7 @@ export function useMealLogsByDate({ startDate, endDate, autoLoad = true }: UseMe
       if (error) throw error;
 
       const updatedMealLog = { ...updatedData, id };
-
-      // Handle meal log moving in/out of date range
-      if (updatedMealLog.eaten_on >= startDate && updatedMealLog.eaten_on <= endDate) {
-        // Update if it's in range
-        setMealLogs(prev => prev.map(log =>
-          log.id === id ? updatedMealLog : log
-        ));
-      } else {
-        // Remove if it moved out of range
-        setMealLogs(prev => prev.filter(log => log.id !== id));
-      }
+      setMealLogs(prev => prev.map(log => (log.id === id ? updatedMealLog : log)));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update meal log');
       throw err;
@@ -257,9 +230,9 @@ export function useMealLogsByDate({ startDate, endDate, autoLoad = true }: UseMe
     return mealLogs.filter(log => log.eaten_on === date);
   };
 
-  // Helper function to load a single day
-  const loadSingleDay = async (date: string) => {
-    await loadMealLogsForDateRange(date, date);
+  // Helper function retained for API compatibility; reloads all
+  const loadSingleDay = async (_date: string) => {
+    await loadMealLogsForDateRange();
   };
 
   return {
