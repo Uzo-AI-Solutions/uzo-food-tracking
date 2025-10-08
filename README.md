@@ -162,22 +162,13 @@ The app works fully without an API key; AI features simply won't be available.
 
 ## Screenshots
 
-### Inventory Management
-<img src="public/screenshots/inventory-management-1.png" width="250" alt="Inventory List" /> <img src="public/screenshots/inventory-management-2.png" width="250" alt="Add/Edit Item" /> <img src="public/screenshots/inventory-management-3.png" width="250" alt="Item Details" />
-
-### Recipe Management
-<img src="public/screenshots/recipe-page-0.png" width="250" alt="Recipe List" /> <img src="public/screenshots/recipe-page-0.1.png" width="250" alt="Recipe Details" /> <img src="public/screenshots/recipe-page-1.png" width="250" alt="Add/Edit Recipe" />
-
-### Meal Logging
-<img src="public/screenshots/log-page-1.png" width="250" alt="Meal Log List" /> <img src="public/screenshots/log-page-2.png" width="250" alt="Add Meal Dialog" /> <img src="public/screenshots/log-page-3.png" width="250" alt="Meal Details" />
-
-<img src="public/screenshots/log-page-4.png" width="250" alt="Edit Meal" /> <img src="public/screenshots/log-page-5.png" width="250" alt="Meal Log Filters" /> <img src="public/screenshots/log-page-6.png" width="250" alt="Meal History" />
-
-### Analytics Dashboard
-<img src="public/screenshots/analytics-page-0.png" width="250" alt="Analytics Overview" /> <img src="public/screenshots/analytics-page-1.png" width="250" alt="Nutrition Trends" /> <img src="public/screenshots/analytics-page-2.png" width="250" alt="Consumption Statistics" />
-
-### Settings
-<img src="public/screenshots/settings-page.png" width="250" alt="Settings & Configuration" />
+<p align="center">
+  <img src="public/screenshots/Inventory.PNG" width="250" alt="Inventory Management" />
+  <img src="public/screenshots/Recipes.PNG" width="250" alt="Recipe Management" />
+  <img src="public/screenshots/log.PNG" width="250" alt="Meal Logging" />
+  <img src="public/screenshots/Analytics.PNG" width="250" alt="Analytics Dashboard" />
+  <img src="public/screenshots/Settings.PNG" width="250" alt="Settings & Configuration" />
+</p>
 
 ---
 
