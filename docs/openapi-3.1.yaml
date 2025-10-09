@@ -12,6 +12,7 @@ servers:
 x-user-id: 43af6e15-1b3d-4634-be91-d59cf414a33e
 security:
   - apiKeyAuth: []
+  - bearerAuth: []
 paths:
   /weekly_analytics_cache:
     get:
@@ -899,6 +900,10 @@ components:
       type: apiKey
       in: header
       name: apikey
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     weekly_analytics_cache:
       type: object
