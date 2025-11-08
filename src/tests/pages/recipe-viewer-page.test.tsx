@@ -63,14 +63,16 @@ describe('RecipeViewer Page', () => {
 
   it('shows progress tracking for steps', () => {
     renderWithProviders(<RecipeViewer />);
-    expect(screen.getByText('0/2')).toBeInTheDocument();
+    const progressElements = screen.getAllByText('0/2');
+    expect(progressElements.length).toBeGreaterThan(0);
   });
 
   it('toggles step completion', () => {
     renderWithProviders(<RecipeViewer />);
     const stepButton = screen.getByLabelText(/Step 1.*Mix/);
     fireEvent.click(stepButton);
-    expect(screen.getByText('1/2')).toBeInTheDocument();
+    const progressElements = screen.getAllByText('1/2');
+    expect(progressElements.length).toBeGreaterThan(0);
   });
 
   it('shows reset button when steps are completed', () => {

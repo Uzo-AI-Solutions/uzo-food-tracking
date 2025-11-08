@@ -2,7 +2,6 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Users, AlertCircle, RotateCcw, Loader2, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useRecipes } from '@/hooks/useRecipes';
 import { useInventorySearch } from '@/hooks/useInventorySearch';
@@ -359,37 +358,10 @@ export default function RecipeViewer() {
         )}
       </div>
 
-      <Tabs defaultValue="instructions" className="flex-1 flex flex-col">
-        <div className="px-3 sm:px-4 pt-3 sm:pt-4">
-          <TabsList className="grid w-full grid-cols-2 h-auto" role="tablist">
-            <TabsTrigger 
-              value="ingredients" 
-              className="text-sm sm:text-base py-2 sm:py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              role="tab"
-              aria-label="View recipe ingredients"
-            >
-              Ingredients
-            </TabsTrigger>
-            <TabsTrigger 
-              value="instructions" 
-              className="text-sm sm:text-base py-2 sm:py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-              role="tab"
-              aria-label="View recipe instructions"
-            >
-              Instructions
-              {totalSteps > 0 && (
-                <span className="ml-1 text-xs opacity-75">({completedCount}/{totalSteps})</span>
-              )}
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent
-          value="ingredients"
-          className="flex-1 overflow-y-auto px-3 sm:px-4 pb-4 mt-2 sm:mt-4"
-          role="tabpanel"
-          aria-label="Recipe ingredients list"
-        >
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 space-y-6 sm:space-y-8">
+        {/* Ingredients Section */}
+        <section aria-label="Recipe ingredients">
+          <h2 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-foreground">Ingredients</h2>
           {(recipe.ingredients.length === 0 && (!recipe.ingredient_list || recipe.ingredient_list.length === 0)) ? (
             <div className="text-center text-muted-foreground py-8">
               <p>No ingredients listed for this recipe.</p>
@@ -440,14 +412,18 @@ export default function RecipeViewer() {
               )}
             </ul>
           )}
-        </TabsContent>
+        </section>
 
-        <TabsContent
-          value="instructions"
-          className="flex-1 overflow-y-auto px-3 sm:px-4 pb-4 mt-2 sm:mt-4"
-          role="tabpanel"
-          aria-label="Recipe cooking instructions"
-        >
+        {/* Instructions Section */}
+        <section aria-label="Recipe cooking instructions">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">Instructions</h2>
+            {totalSteps > 0 && (
+              <span className="text-sm text-muted-foreground">
+                {completedCount}/{totalSteps}
+              </span>
+            )}
+          </div>
           {steps.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               <p>No instructions provided for this recipe.</p>
@@ -459,9 +435,9 @@ export default function RecipeViewer() {
                   <span className="text-sm text-muted-foreground">
                     Progress: {completedCount} of {totalSteps} steps completed
                   </span>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={resetProgress}
                     className="text-xs min-h-[36px] touch-manipulation"
                     aria-label="Reset all step progress"
@@ -505,8 +481,8 @@ export default function RecipeViewer() {
               </ol>
             </>
           )}
-        </TabsContent>
-      </Tabs>
+        </section>
+      </div>
     </main>
   );
 }
