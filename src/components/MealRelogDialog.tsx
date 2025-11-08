@@ -188,15 +188,13 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
 
   const steps = [
     { number: 1, title: 'Find Meal', description: 'Search and select a meal' },
-    { number: 2, title: 'Adjust', description: 'Set quantity and date' },
-    { number: 3, title: 'Confirm', description: 'Review and re-log' }
+    { number: 2, title: 'Adjust & Log', description: 'Set quantity and log' }
   ];
 
   const canProceedToStep2 = selectedMeal !== null;
-  const canProceedToStep3 = selectedMeal !== null && multiplier > 0;
 
   const handleNext = () => {
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -342,9 +340,9 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
   const renderStep2 = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold mb-2">Adjust Quantity & Date</h3>
+        <h3 className="text-lg font-semibold mb-2">Adjust & Log Meal</h3>
         <p className="text-sm text-muted-foreground">
-          Set how much and when to log this meal
+          Set quantity, date, and log your meal
         </p>
       </div>
 
@@ -356,7 +354,24 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
             <p className="text-sm text-muted-foreground">
               Originally eaten on {formatDate(selectedMeal.eaten_on)}
             </p>
-            <div className="flex gap-3 text-sm text-muted-foreground">
+
+            {/* Items */}
+            {selectedMeal.items && selectedMeal.items.length > 0 && (
+              <div className="flex flex-wrap gap-1 pt-1">
+                {selectedMeal.items.slice(0, 5).map((item, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {item.length > 15 ? item.substring(0, 15) + '...' : item}
+                  </Badge>
+                ))}
+                {selectedMeal.items.length > 5 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{selectedMeal.items.length - 5} more
+                  </Badge>
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-3 text-sm text-muted-foreground pt-1">
               <span>{selectedMeal.macros?.calories?.toFixed(0) || 0} cal</span>
               <span>P: {selectedMeal.macros?.protein?.toFixed(1) || 0}g</span>
               <span>C: {selectedMeal.macros?.carbs?.toFixed(1) || 0}g</span>
@@ -412,6 +427,25 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
         </div>
       </div>
 
+      {/* Updated Nutrition Preview */}
+      {selectedMeal && (
+        <Card className="p-4 bg-green-50 border-green-200">
+          <h4 className="font-medium mb-2 text-green-800 text-sm">Total Nutrition to Log</h4>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <span className="font-semibold text-lg text-green-700">
+                {((selectedMeal.macros?.calories || 0) * multiplier).toFixed(0)} cal
+              </span>
+            </div>
+            <div className="space-y-0.5 text-green-700 text-xs">
+              <div>Protein: {((selectedMeal.macros?.protein || 0) * multiplier).toFixed(1)}g</div>
+              <div>Carbs: {((selectedMeal.macros?.carbs || 0) * multiplier).toFixed(1)}g</div>
+              <div>Fat: {((selectedMeal.macros?.fat || 0) * multiplier).toFixed(1)}g</div>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Date Selection */}
       <div className="space-y-3">
         <Label htmlFor="eaten-on">Date to Log</Label>
@@ -438,94 +472,6 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
     </div>
   );
 
-  const renderStep3 = () => (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold mb-2">Review & Confirm</h3>
-        <p className="text-sm text-muted-foreground">
-          Double-check the details before re-logging
-        </p>
-      </div>
-
-      {/* Final Review */}
-      {selectedMeal && (
-        <div className="space-y-4">
-          <Card className="p-4">
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold text-lg">{selectedMeal.meal_name}</h4>
-                <p className="text-sm text-muted-foreground">
-                  Originally eaten on {formatDate(selectedMeal.eaten_on)}
-                </p>
-              </div>
-
-              {/* Items */}
-              {selectedMeal.items && selectedMeal.items.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">Items:</p>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedMeal.items.map((item, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {item}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Original Notes */}
-              {selectedMeal.notes && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Original Notes:</p>
-                  <p className="text-sm">{selectedMeal.notes}</p>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Re-log Details */}
-          <Card className="p-4 bg-primary/5">
-            <h4 className="font-medium mb-3">Re-log Details</h4>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Quantity:</span>
-                <span className="font-medium">{multiplier}x</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Date:</span>
-                <span className="font-medium">
-                  {eatenOn === getTodayLocalDate() ? 'Today' : formatDate(eatenOn)}
-                </span>
-              </div>
-              {additionalNotes && (
-                <div>
-                  <span className="text-sm text-muted-foreground">Additional Notes:</span>
-                  <p className="text-sm mt-1">{additionalNotes}</p>
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Updated Nutrition */}
-          <Card className="p-4 bg-green-50 border-green-200">
-            <h4 className="font-medium mb-3 text-green-800">Updated Nutrition</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-semibold text-lg text-green-700">
-                  {((selectedMeal.macros?.calories || 0) * multiplier).toFixed(0)} cal
-                </span>
-              </div>
-              <div className="space-y-1 text-green-700">
-                <div>Protein: {((selectedMeal.macros?.protein || 0) * multiplier).toFixed(1)}g</div>
-                <div>Carbs: {((selectedMeal.macros?.carbs || 0) * multiplier).toFixed(1)}g</div>
-                <div>Fat: {((selectedMeal.macros?.fat || 0) * multiplier).toFixed(1)}g</div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -545,31 +491,18 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
 
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
         </div>
 
         {/* Navigation Footer */}
         <div className={`flex-shrink-0 border-t bg-background ${isMobile ? 'px-6 py-4' : 'px-6 pt-4'}`}>
-          {currentStep < 3 ? (
+          {currentStep === 1 ? (
+            // Step 1: Show only Next button
             <div className="flex gap-3">
-              {currentStep > 1 && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePrevious}
-                  className={`${isMobile ? 'h-12' : ''} gap-2`}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                  Back
-                </Button>
-              )}
-
               <div className="flex-1" />
-
               <Button
                 type="button"
                 onClick={handleNext}
-                disabled={(currentStep === 1 && !canProceedToStep2) || (currentStep === 2 && !canProceedToStep3)}
+                disabled={!canProceedToStep2}
                 className={`${isMobile ? 'h-12' : ''} gap-2`}
               >
                 Next
@@ -577,7 +510,7 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
               </Button>
             </div>
           ) : (
-            // Step 3: Stack buttons vertically on mobile for better fit
+            // Step 2: Show Back, Cancel, and Re-log buttons
             <div className={`${isMobile ? 'space-y-3' : 'flex gap-3'}`}>
               {!isMobile && (
                 <Button
@@ -616,7 +549,7 @@ export function MealRelogDialog({ open, onOpenChange, mealLogs, onRelogMeal }: M
               <Button
                 type="button"
                 onClick={handleRelogMeal}
-                disabled={isRelogging}
+                disabled={isRelogging || multiplier <= 0}
                 className={`${isMobile ? 'h-12 w-full' : ''} gap-2`}
               >
                 {isRelogging ? 'Re-logging...' : (
